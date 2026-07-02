@@ -29,7 +29,7 @@ const users = [
   { id: 'u13', name: 'Nermin Nabil',    email: 'nermine.nabil@sixt.com.eg', password: bcrypt.hashSync('2991', 10), role: 'handler', department: 'Complaints', sapId: '2991' },
   { id: 'u14', name: 'Hamed Mohammed',  email: 'hamed.mohamed@sixt.com.eg', password: bcrypt.hashSync('3629', 10), role: 'handler', department: 'Complaints', sapId: '3629' },
   { id: 'u15', name: 'Hossam Hassan',   email: 'h.hassan@sixt.com.eg',      password: bcrypt.hashSync('696', 10),  role: 'manager', department: 'Operations', sapId: '696' },
-  { id: 'u16', name: 'Mohamed Hamdy',   email: 'mhamdy@sixt.com.eg',        password: bcrypt.hashSync('779', 10),  role: 'manager', department: 'Operations', sapId: '779' },
+  { id: 'u16', name: 'Mohamed Hamdy',   email: 'mhamdy@sixt.com.eg',        password: bcrypt.hashSync('792', 10),  role: 'manager', department: 'Operations', sapId: '792' },
 ];
 
 const CATEGORIES = ['Billing', 'Service Outage', 'Product Quality', 'Staff Conduct', 'Delivery', 'Technical Issue', 'Refund Request', 'Other'];
@@ -180,6 +180,13 @@ app.patch('/api/tickets/:id', auth, (req, res) => {
   ticket.updatedAt = new Date().toISOString();
   tickets[idx] = ticket;
   res.json(ticket);
+});
+
+app.delete('/api/tickets/:id', auth, requireRole('manager'), (req, res) => {
+  const idx = tickets.findIndex(t => t.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Ticket not found' });
+  tickets.splice(idx, 1);
+  res.json({ message: 'Ticket deleted' });
 });
 
 app.post('/api/tickets/:id/comments', auth, (req, res) => {

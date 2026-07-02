@@ -26,9 +26,12 @@ export default function TicketDetail() {
   const [comment, setComment] = useState('');
   const [posting, setPosting] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [updates, setUpdates] = useState({});
 
   const canEdit = user.role !== 'agent';
+  const isManager = user.role === 'manager';
 
   useEffect(() => {
     Promise.all([
@@ -47,6 +50,17 @@ export default function TicketDetail() {
     setTicket(t => ({ ...t, ...r.data }));
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
+  };
+
+  const deleteTicket = async () => {
+    setDeleting(true);
+    try {
+      await api.delete(`/tickets/${id}`);
+      navigate('/tickets');
+    } catch {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
   };
 
   const postComment = async () => {
@@ -77,6 +91,7 @@ export default function TicketDetail() {
 
       <div className="page-body">
         <div className="detail-grid">
+          {/* Left: description + comments */}
           <div>
             <div className="card" style={{marginBottom:20}}>
               <div style={{fontWeight:700, marginBottom:12, fontSize:13, color:'var(--text-2)', textTransform:'uppercase', letterSpacing:'0.5px'}}>Description</div>
@@ -113,6 +128,7 @@ export default function TicketDetail() {
             </div>
           </div>
 
+          {/* Right: management panel */}
           <div>
             <div className="card">
               <div style={{fontWeight:700, marginBottom:16, fontSize:13, color:'var(--text-2)', textTransform:'uppercase', letterSpacing:'0.5px'}}>Ticket Management</div>
@@ -180,6 +196,32 @@ export default function TicketDetail() {
                   ))}
                 </div>
               </div>
+
+              {/* Delete button — managers only */}
+              {isManager && (
+                <div style={{borderTop:'1px solid var(--border)', marginTop:20, paddingTop:20}}>
+                  {!confirmDelete ? (
+                    <button className="btn btn-danger" style={{width:'100%', justifyContent:'center'}}
+                      onClick={() => setConfirmDelete(true)}>
+                      🗑 Delete Ticket
+                    </button>
+                  ) : (
+                    <div style={{background:'rgba(244,91,91,0.1)', border:'1px solid rgba(244,91,91,0.3)', borderRadius:8, padding:14}}>
+                      <div style={{fontSize:13, color:'var(--danger)', marginBottom:12, fontWeight:600}}>Are you sure you want to delete this ticket? This cannot be undone.</div>
+                      <div style={{display:'flex', gap:8}}>
+                        <button className="btn btn-danger btn-sm" style={{flex:1, justifyContent:'center'}}
+                          onClick={deleteTicket} disabled={deleting}>
+                          {deleting ? 'Deleting…' : 'Yes, Delete'}
+                        </button>
+                        <button className="btn btn-secondary btn-sm" style={{flex:1, justifyContent:'center'}}
+                          onClick={() => setConfirmDelete(false)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
