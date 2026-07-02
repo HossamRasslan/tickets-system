@@ -29,7 +29,7 @@ const users = [
   { id: 'u13', name: 'Nermin Nabil',    email: 'nermine.nabil@sixt.com.eg', password: bcrypt.hashSync('2991', 10), role: 'handler', department: 'Complaints', sapId: '2991' },
   { id: 'u14', name: 'Hamed Mohammed',  email: 'hamed.mohamed@sixt.com.eg', password: bcrypt.hashSync('3629', 10), role: 'handler', department: 'Complaints', sapId: '3629' },
   { id: 'u15', name: 'Hossam Hassan',   email: 'h.hassan@sixt.com.eg',      password: bcrypt.hashSync('696', 10),  role: 'manager', department: 'Operations', sapId: '696' },
-  { id: 'u16', name: 'Mohamed Hamdy',   email: 'mhamdy@sixt.com.eg',        password: bcrypt.hashSync('792', 10),  role: 'manager', department: 'Operations', sapId: '792' },
+  { id: 'u16', name: 'Mohamed Hamdy',   email: 'mhamdy@sixt.com.eg',        password: bcrypt.hashSync('779', 10),  role: 'manager', department: 'Operations', sapId: '779' },
 ];
 
 const CATEGORIES = ['Billing', 'Service Outage', 'Product Quality', 'Staff Conduct', 'Delivery', 'Technical Issue', 'Refund Request', 'Other'];
@@ -63,11 +63,10 @@ function requireRole(...roles) {
 // ─── Auth routes ──────────────────────────────────────────────────────────────
 
 app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-  // For agents sharing the same email, match by email + password (SAP ID)
-  const user = users.find(u => u.email === email && bcrypt.compareSync(password, u.password));
+  const { username, password } = req.body;
+  const user = users.find(u => u.name.toLowerCase() === username?.toLowerCase().trim() && bcrypt.compareSync(password, u.password));
   if (!user)
-    return res.status(401).json({ error: 'Invalid credentials' });
+    return res.status(401).json({ error: 'Invalid username or password' });
   const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '8h' });
   res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department, sapId: user.sapId } });
 });
