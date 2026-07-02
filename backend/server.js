@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const JWT_SECRET = 'tickets-system-secret-2024';
 
 app.use(cors());
@@ -14,75 +14,30 @@ app.use(express.json());
 // ─── In-memory store ───────────────────────────────────────────────────────────
 
 const users = [
-  { id: 'user1', name: 'Mostafa Fathy',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('2735', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Doaa Salah',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('2746', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Israa Mostafa',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('2926', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Shaher Atef',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3079', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Ahmed Ali',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3115', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Mohamed Khaled',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3279', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Yasmin Mohamed',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3197', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Mohamed Ragab',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3366', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Ramy Naeem',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3716', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Mahmoud Atwa',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3714', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'user1', name: 'Maya Mohamed',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3724', 10),    role: 'agent',      department: 'Contact Center' },
-  { id: 'u2', name: 'Shahd Yasser',      email: 'london.cab@sixt.com.eg',     password: bcrypt.hashSync('3658', 10),    role: 'agent',      department: 'Email Support' },
-  { id: 'u3', name: 'Nermin Nabil',     email: 'nermine.nabil@sixt.com.eg',   password: bcrypt.hashSync('2991', 10),  role: 'handler',    department: 'Complaints' },
-  { id: 'u4', name: 'Hamed Mohammed',  email: 'hamed.mohamed@aboughalymotors.com',   password: bcrypt.hashSync('3629', 10),  role: 'handler',    department: 'Complaints' },
-  { id: 'u5', name: 'Hossam Hassan',   email: 'h.hassan@sixt.com.eg',    password: bcrypt.hashSync('696', 10),  role: 'manager',    department: 'Complaints' },
-  { id: 'u5', name: 'Mohamed Hamdy',   email: 'mhamdy@sixt.com.eg',    password: bcrypt.hashSync('792', 10),  role: 'manager',    department: 'Manager' },
-
+  { id: 'u1',  name: 'Mostafa Fathy',   email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('2735', 10), role: 'agent',   department: 'Call Center', sapId: '2735' },
+  { id: 'u2',  name: 'Doaa Salah',      email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('2746', 10), role: 'agent',   department: 'Call Center', sapId: '2746' },
+  { id: 'u3',  name: 'Israa Mostafa',   email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('2926', 10), role: 'agent',   department: 'Call Center', sapId: '2926' },
+  { id: 'u4',  name: 'Shaher Atef',     email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3079', 10), role: 'agent',   department: 'Call Center', sapId: '3079' },
+  { id: 'u5',  name: 'Ahmed Ali',       email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3115', 10), role: 'agent',   department: 'Call Center', sapId: '3115' },
+  { id: 'u6',  name: 'Mohamed Khaled',  email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3279', 10), role: 'agent',   department: 'Call Center', sapId: '3279' },
+  { id: 'u7',  name: 'Yasmin Mohamed',  email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3197', 10), role: 'agent',   department: 'Call Center', sapId: '3197' },
+  { id: 'u8',  name: 'Mohamed Ragab',   email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3366', 10), role: 'agent',   department: 'Call Center', sapId: '3366' },
+  { id: 'u9',  name: 'Ramy Naeem',      email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3716', 10), role: 'agent',   department: 'Call Center', sapId: '3716' },
+  { id: 'u10', name: 'Mahmoud Atwa',    email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3714', 10), role: 'agent',   department: 'Call Center', sapId: '3714' },
+  { id: 'u11', name: 'Maya Mohamed',    email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3724', 10), role: 'agent',   department: 'Call Center', sapId: '3724' },
+  { id: 'u12', name: 'Shahd Yasser',    email: 'london.cab@sixt.com.eg', password: bcrypt.hashSync('3658', 10), role: 'agent',   department: 'Call Center', sapId: '3658' },
+  { id: 'u13', name: 'Nermin Nabil',    email: 'nermine.nabil@sixt.com.eg', password: bcrypt.hashSync('2991', 10), role: 'handler', department: 'Complaints', sapId: '2991' },
+  { id: 'u14', name: 'Hamed Mohammed',  email: 'hamed.mohamed@sixt.com.eg', password: bcrypt.hashSync('3629', 10), role: 'handler', department: 'Complaints', sapId: '3629' },
+  { id: 'u15', name: 'Hossam Hassan',   email: 'h.hassan@sixt.com.eg',      password: bcrypt.hashSync('696', 10),  role: 'manager', department: 'Operations', sapId: '696' },
+  { id: 'u16', name: 'Mohamed Hamdy',   email: 'mhamdy@sixt.com.eg',        password: bcrypt.hashSync('792', 10),  role: 'manager', department: 'Operations', sapId: '792' },
 ];
 
 const CATEGORIES = ['Billing', 'Service Outage', 'Product Quality', 'Staff Conduct', 'Delivery', 'Technical Issue', 'Refund Request', 'Other'];
 const PRIORITIES = ['Low', 'Medium', 'High', 'Urgent'];
 const STATUSES   = ['Open', 'In Progress', 'Pending Customer', 'Resolved', 'Closed'];
 
-let tickets = [
-  {
-    id: 'TKT-001', title: 'Customer overcharged on invoice #4421',
-    description: 'Customer John Smith called about a double charge on his March invoice. Amount: $149.99.',
-    category: 'Billing', priority: 'High', status: 'In Progress',
-    submittedBy: 'u1', assignedTo: 'u3', customerId: 'CUST-8821', customerName: 'John Smith',
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    comments: [
-      { id: 'c1', userId: 'u3', text: 'Reviewing the billing records now.', createdAt: new Date(Date.now() - 3600000 * 5).toISOString() }
-    ]
-  },
-  {
-    id: 'TKT-002', title: 'Internet service down for 2 days',
-    description: 'Customer reports complete outage since Monday. Multiple resets attempted.',
-    category: 'Service Outage', priority: 'Urgent', status: 'Open',
-    submittedBy: 'u2', assignedTo: null, customerId: 'CUST-5544', customerName: 'Maria Chen',
-    createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-    comments: []
-  },
-  {
-    id: 'TKT-003', title: 'Refund not received after 30 days',
-    description: 'Refund of $299 approved on Feb 1st but still not credited to account.',
-    category: 'Refund Request', priority: 'Medium', status: 'Pending Customer',
-    submittedBy: 'u1', assignedTo: 'u4', customerId: 'CUST-3310', customerName: 'Ahmed Hassan',
-    createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    comments: [
-      { id: 'c2', userId: 'u4', text: 'Asked customer to confirm bank details.', createdAt: new Date(Date.now() - 86400000 * 2).toISOString() }
-    ]
-  },
-  {
-    id: 'TKT-004', title: 'Rude behavior from delivery staff',
-    description: 'Customer complained about aggressive behavior from delivery agent #D44.',
-    category: 'Staff Conduct', priority: 'High', status: 'Resolved',
-    submittedBy: 'u2', assignedTo: 'u3', customerId: 'CUST-7721', customerName: 'Priya Nair',
-    createdAt: new Date(Date.now() - 86400000 * 15).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-    comments: [
-      { id: 'c3', userId: 'u3', text: 'Reviewed CCTV footage. Warning issued to agent. Customer apologized to.', createdAt: new Date(Date.now() - 86400000 * 5).toISOString() }
-    ]
-  }
-];
-
-let ticketCounter = 5;
+let tickets = [];
+let ticketCounter = 1;
 
 // ─── Auth middleware ──────────────────────────────────────────────────────────
 
@@ -109,17 +64,18 @@ function requireRole(...roles) {
 
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
-  const user = users.find(u => u.email === email);
-  if (!user || !bcrypt.compareSync(password, user.password))
+  // For agents sharing the same email, match by email + password (SAP ID)
+  const user = users.find(u => u.email === email && bcrypt.compareSync(password, u.password));
+  if (!user)
     return res.status(401).json({ error: 'Invalid credentials' });
   const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '8h' });
-  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
+  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department, sapId: user.sapId } });
 });
 
 app.get('/api/auth/me', auth, (req, res) => {
   const user = users.find(u => u.id === req.user.id);
   if (!user) return res.status(404).json({ error: 'Not found' });
-  res.json({ id: user.id, name: user.name, email: user.email, role: user.role, department: user.department });
+  res.json({ id: user.id, name: user.name, email: user.email, role: user.role, department: user.department, sapId: user.sapId });
 });
 
 // ─── Lookup routes ────────────────────────────────────────────────────────────
